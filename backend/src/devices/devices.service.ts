@@ -23,7 +23,7 @@ export class DevicesService {
 
   findAllByUser(userId: string) {
     return this.prisma.device.findMany({
-      where: { userId },
+      where: { userId, deletedAt: null },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -33,6 +33,7 @@ export class DevicesService {
       where: {
         id,
         userId,
+        deletedAt: null,
       },
     });
 
@@ -70,6 +71,7 @@ export class DevicesService {
       where: {
         id,
         userId,
+        deletedAt: null, // 👈 importante
       },
     });
 
@@ -77,8 +79,56 @@ export class DevicesService {
       throw new NotFoundException('Device not found');
     }
 
-    return this.prisma.device.delete({
+    return this.prisma.device.update({
       where: { id },
+      data: {
+        deletedAt: new Date(),
+      },
     });
   }
+
+  async restore(id: string, userId: string) {
+    const device = await this.prisma.device.findFirst({
+      where: {
+        id,
+        userId,
+        deletedAt: { not: null },
+      },
+    });
+
+    if (!device) {
+      throw new NotFoundException('Device not found or not deleted');
+    }
+
+    return this.prisma.device.update({
+      where: { id },
+      data: {
+        deletedAt: null,
+      },
+    });
+  }
+
+  async getLocations(
+    deviceId: string,
+    start: string,
+    end: string,
+    userId: string,
+  ) {
+    return this.prisma.deviceLocation.findMany({
+      where: {
+        deviceId,
+        device: {
+          userId,
+        },
+        createdAt: {
+          gte: new Date(start),
+          lte: new Date(end),
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+  }
+
 }

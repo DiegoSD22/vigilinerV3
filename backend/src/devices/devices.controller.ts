@@ -1,4 +1,4 @@
-import { Controller, Param, Patch, Req } from '@nestjs/common';
+import { Controller, Param, Patch, Query, Req } from '@nestjs/common';
 import { Body, Post, Get, UseGuards } from '@nestjs/common';
 import { DevicesService } from './devices.service';
 import { RolesGuard } from 'src/auth/roles.guard';
@@ -40,6 +40,21 @@ export class DevicesController {
   @Patch(':id/remove')
   remove(@Param('id') id: string, @Req() req) {
     return this.devicesService.remove(id, req.user.id);
+  }
+
+  @Patch(':id/restore')
+  restore(@Param('id') id: string, @Req() req) {
+    return this.devicesService.restore(id, req.user.id);
+  }
+
+  @Get(':id/locations')
+  getLocations(
+    @Param('id') id: string,
+    @Query('start') start: string,
+    @Query('end') end: string,
+    @Req() req,
+  ) {
+    return this.devicesService.getLocations(id, start, end, req.user.id);
   }
 
 }

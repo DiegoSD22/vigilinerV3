@@ -31,7 +31,22 @@ model Device {
   status    String
   userId    String
   user      User     @relation(fields: [userId], references: [id])
+  deviceLocation DeviceLocation[] 
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
+}
+
+model DeviceLocation {
+  id        BigInt   @id @default(autoincrement())
+  deviceId  String
+  lat       Float
+  lng       Float
+  speed     Float?
+  heading   Float?
+  createdAt DateTime @default(now())
+
+  device Device @relation(fields: [deviceId], references: [id])
+
+  @@index([deviceId, createdAt])
 }
