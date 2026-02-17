@@ -1,6 +1,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { Tracking } from '../../core/tracking';
+import 'leaflet-rotatedmarker';
 
 @Component({
   selector: 'app-map',
@@ -28,7 +29,7 @@ export class Map implements AfterViewInit {
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
 
-    this.tracking.connect('b718240b-9007-42b1-802c-e1612f5467a2'); // Usar un ID real de tu BD si quieres probar completo
+    this.tracking.connect('b718240b-9007-42b1-802c-e1612f5467a2'); //ID provisional
     this.tracking.onLocation((data) => {
       this.updateMarker(data);
     });
@@ -38,13 +39,13 @@ export class Map implements AfterViewInit {
     const lat = data.lat;
     const lng = data.lng;
     const carIcon = L.icon({
-      iconUrl: 'https://cdn-icons-png.flaticon.com/512/744/744465.png', // Asegúrate de tener un ícono de coche en esta ruta
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/744/744465.png',
       iconSize: [32, 32],
       iconAnchor: [16, 16],
     });
 
     if (!this.marker) {
-      this.marker = L.marker([lat, lng], { icon: carIcon }).addTo(this.map);
+      this.marker = L.marker([lat, lng], { icon: carIcon, rotationAngle: data.heading || 0 } as any).addTo(this.map);
     } else {
       this.marker.setLatLng([lat, lng]);
     }

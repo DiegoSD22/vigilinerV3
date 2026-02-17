@@ -69,22 +69,26 @@ export function startTcpServer(
     // 🔥 SIMULACIÓN TEMPORAL
     let lat = 19.4326;
     let lng = -99.1332;
-    const deviceId = 'test-device-id'; // usa un ID real de tu BD si quieres probar completo
+    let speed = 0;
+    let heading = 0;
+    const deviceId = 'b718240b-9007-42b1-802c-e1612f5467a2'; // ID provisional
 
     setInterval(() => {
 
       lat += (Math.random() - 0.5) * 0.002;
       lng += (Math.random() - 0.5) * 0.002;
+      speed = Math.random() * 80;
+      heading = Math.random() * 360;
 
       gateway.server.emit('receiveLocation', {
         deviceId,
         lat,
         lng,
-        speed: Math.random() * 80,
-        heading: Math.random() * 360,
+        speed,
+        heading,
       });
 
-      console.log('🧪 Simulación enviada:', lat, lng);
+      console.log('🧪 Simulación enviada:', lat, lng, speed, heading);
 
     }, 2000);
   });
