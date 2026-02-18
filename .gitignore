@@ -16,7 +16,9 @@ build/
 
 # Docker
 .docker/
+docker/
 
 # OS
 .DS_Store
 Thumbs.db
+
