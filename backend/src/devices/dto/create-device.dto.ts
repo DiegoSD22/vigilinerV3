@@ -7,7 +7,7 @@ export class CreateDeviceDto {
 
   @IsString()
   @IsNotEmpty()
-  name: string;
+  model: string;
 
   @IsString()
   @IsNotEmpty()

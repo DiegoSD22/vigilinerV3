@@ -29,6 +29,15 @@ export function startTcpServer(
           return;
         }
 
+        const unit = await prisma.unit.findUnique({
+          where: { deviceId: device.id },
+        });
+
+        if (!unit) {
+          console.log('❌ No hay unidad asignada a este GPS:', device.id);
+          return;
+        }
+
         if (!parsed.loc || !parsed.loc.coordinates) return;
 
         const [lng, lat] = parsed.loc.coordinates;
@@ -44,7 +53,7 @@ export function startTcpServer(
         });
 
         // Emitir en tiempo real
-        gateway.server.to(device.id).emit('receiveLocation', {
+        gateway.server.to(unit.id).emit('receiveLocation', {
           deviceId: device.id,
           lat,
           lng,

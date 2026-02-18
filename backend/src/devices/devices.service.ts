@@ -11,7 +11,7 @@ export class DevicesService {
     return this.prisma.device.create({
       data: {
         imei: data.imei,
-        name: data.name,
+        model: data.model,
         brand: data.brand,
         status: data.status,
         user: {
@@ -71,7 +71,7 @@ export class DevicesService {
       where: {
         id,
         userId,
-        deletedAt: null, // 👈 importante
+        deletedAt: null,
       },
     });
 
